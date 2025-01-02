@@ -32,4 +32,46 @@ export class AuthController {
         });
         return { token };
     }
+
+    @Post('google-login')
+    @ApiOperation({
+        summary:
+            'Login with Google. Returns set-cookie JWT token with user info (id, email, roles).',
+    })
+    async googleLogin(
+        @Body('token') token: string,
+        @Res({ passthrough: true }) res: Response
+    ) {
+        const perhapsToken = await this.authService.googleLogin(token);
+        if (perhapsToken.hasError()) {
+            throw new HttpException(perhapsToken.getError().message, 403);
+        }
+        const jwtToken = perhapsToken.get();
+        res.cookie('Authorization', `Bearer ${jwtToken}`, {
+            httpOnly: true,
+            path: '/',
+        });
+        return { token: jwtToken };
+    }
+
+    @Post('linkedin-login')
+    @ApiOperation({
+        summary:
+            'Login with LinkedIn. Returns set-cookie JWT token with user info (id, email, roles).',
+    })
+    async linkedInLogin(
+        @Body('token') token: string,
+        @Res({ passthrough: true }) res: Response
+    ) {
+        const perhapsToken = await this.authService.linkedInLogin(token);
+        if (perhapsToken.hasError()) {
+            throw new HttpException(perhapsToken.getError().message, 403);
+        }
+        const jwtToken = perhapsToken.get();
+        res.cookie('Authorization', `Bearer ${jwtToken}`, {
+            httpOnly: true,
+            path: '/',
+        });
+        return { token: jwtToken };
+    }
 }

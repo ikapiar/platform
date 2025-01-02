@@ -60,6 +60,22 @@ export const AppConfigs = [
         key: 'APP_DESCRIPTION',
         defaultValue: packageJSON['description'],
     },
+    {
+        key: 'GOOGLE_CLIENT_ID',
+        defaultValue: '',
+    },
+    {
+        key: 'GOOGLE_CLIENT_SECRET',
+        defaultValue: '',
+    },
+    {
+        key: 'LINKEDIN_CLIENT_ID',
+        defaultValue: '',
+    },
+    {
+        key: 'LINKEDIN_CLIENT_SECRET',
+        defaultValue: '',
+    },
 ] as const;
 export type AppConfig = (typeof AppConfigs)[number];
 
