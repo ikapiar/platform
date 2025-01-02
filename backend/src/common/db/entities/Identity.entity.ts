@@ -15,7 +15,7 @@ export class Identity {
     @Column()
     token!: string;
 
-    @ManyToOne(() => User)
+    @ManyToOne(() => User, (user) => user.identities)
     user!: Promise<User>;
 
     @Column({ type: 'jsonb', nullable: true })

@@ -32,4 +32,58 @@ export class AuthController {
         });
         return { token };
     }
+
+    @Post('google-login')
+    @ApiOperation({
+        summary:
+            'Login with Google. Returns set-cookie JWT token with user info (id, email, roles).',
+    })
+    async googleLogin(
+        @Body('token') token: string,
+        @Res({ passthrough: true }) res: Response
+    ) {
+        const perhapsToken = await this.authService.googleLogin(token);
+        if (perhapsToken.hasError()) {
+            throw new HttpException(perhapsToken.getError().message, 403);
+        }
+        const jwtToken = perhapsToken.get();
+        res.cookie('Authorization', `Bearer ${jwtToken}`, {
+            httpOnly: true,
+            path: '/',
+        });
+        return { token: jwtToken };
+    }
+
+    @Post('linkedin-login')
+    @ApiOperation({
+        summary:
+            'Login with LinkedIn. Returns set-cookie JWT token with user info (id, email, roles).',
+    })
+    async linkedInLogin(
+        @Body('token') token: string,
+        @Res({ passthrough: true }) res: Response
+    ) {
+        const perhapsToken = await this.authService.linkedInLogin(token);
+        if (perhapsToken.hasError()) {
+            throw new HttpException(perhapsToken.getError().message, 403);
+        }
+        const jwtToken = perhapsToken.get();
+        res.cookie('Authorization', `Bearer ${jwtToken}`, {
+            httpOnly: true,
+            path: '/',
+        });
+        return { token: jwtToken };
+    }
+
+    @Post('verify')
+    @ApiOperation({
+        summary: 'Verify JWT token. Returns the token payload if valid.',
+    })
+    async verifyToken(@Body('token') token: string) {
+        const perhapsPayload = await this.authService.verifyToken(token);
+        if (perhapsPayload.hasError()) {
+            throw new HttpException(perhapsPayload.getError().message, 403);
+        }
+        return { payload: perhapsPayload.get() };
+    }
 }
