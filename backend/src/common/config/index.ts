@@ -5,6 +5,7 @@ import type {
 import { join } from 'path';
 import { DataSource } from 'typeorm';
 import { readFileSync } from 'fs';
+import { jwtVerify } from 'jose';
 
 export const packageJSON = JSON.parse(
     readFileSync(join(process.cwd(), 'package.json'), {
@@ -138,5 +139,14 @@ export class ConfigNotFound extends Error {
 export class OrmOptionsUndefined extends Error {
     constructor(message: string) {
         super(message);
+    }
+}
+
+export async function verifyToken(token: string): Promise<any> {
+    try {
+        const { payload } = await jwtVerify(token, PUBLIC_KEY);
+        return payload;
+    } catch (error) {
+        throw new Error('Invalid token');
     }
 }

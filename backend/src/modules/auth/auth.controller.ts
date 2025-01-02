@@ -74,4 +74,16 @@ export class AuthController {
         });
         return { token: jwtToken };
     }
+
+    @Post('verify')
+    @ApiOperation({
+        summary: 'Verify JWT token. Returns the token payload if valid.',
+    })
+    async verifyToken(@Body('token') token: string) {
+        const perhapsPayload = await this.authService.verifyToken(token);
+        if (perhapsPayload.hasError()) {
+            throw new HttpException(perhapsPayload.getError().message, 403);
+        }
+        return { payload: perhapsPayload.get() };
+    }
 }

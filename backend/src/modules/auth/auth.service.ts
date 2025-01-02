@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { getConfig, PRIVATE_KEY } from '../../common/config';
+import { getConfig, PRIVATE_KEY, verifyToken as verifyJwtToken } from '../../common/config';
 import { scryptSync } from 'crypto';
 import { SignJWT, importPKCS8 } from 'jose';
 import { Perhaps } from '../../common/utils/Perhaps.ts';
@@ -117,6 +117,15 @@ export class AuthService {
             .setExpirationTime(getConfig('JWT_EXPIRES_IN'))
             .sign(privateKey);
         return Perhaps.Of(jwtToken);
+    }
+
+    async verifyToken(token: string): Promise<Perhaps<any>> {
+        try {
+            const payload = await verifyJwtToken(token);
+            return Perhaps.Of(payload);
+        } catch (error) {
+            return Perhaps.OfError(new Error('Invalid token'));
+        }
     }
 
     private async verifyGoogleToken(token: string): Promise<any> {
