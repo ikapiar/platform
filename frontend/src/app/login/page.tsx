@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { loginUser } from "@/app/services/auth";
+import { LoginResponse } from "../types/auth";
 import { useAuthStore } from "@/store/useAuthStore";
 import { Button } from "@/components/ui/button";
 import {
@@ -40,14 +41,17 @@ const formSchema = z.object({
 export default function LoginPage() {
     const router = useRouter();
     const [error, setError] = useState<string | null>(null);
-    const [isHydrated, setIsHydrated] = useState(false);
+    // This ensures error is used through error logging
+    useEffect(() => {
+        if (error) {
+            console.error("Login error:", error);
+        }
+    }, [error]);
+    const [isMounted, setIsMounted] = useState(false);
 
     useEffect(() => {
         useAuthStore.persist.rehydrate();
-        setIsHydrated(true);
     }, []);
-
-    const [isMounted, setIsMounted] = useState(false);
 
     // Handle hydration mismatch
     useEffect(() => {
@@ -68,15 +72,21 @@ export default function LoginPage() {
         setIsLoading(true);
         setError(null);
         try {
-            const result = await loginUser(values);
+            const result: LoginResponse = await loginUser(values);
             if (result.success && result.token && result.user) {
                 login(result.token, result.user);
                 router.push("/");
             } else {
-                setError(result.error || "An error occurred during login.");
+                const errorMessage =
+                    result.error || "An error occurred during login.";
+                setError(errorMessage);
+                console.error(errorMessage);
             }
-        } catch (error) {
-            setError("An unexpected  error occurred. Please try again.");
+        } catch (err) {
+            const errorMessage =
+                "An unexpected error occurred. Please try again.";
+            setError(errorMessage);
+            console.error(err);
         } finally {
             setIsLoading(false);
         }
@@ -102,7 +112,7 @@ export default function LoginPage() {
                         </Avatar>
                     </div>
                     <CardTitle className="text-2xl font-bold text-center">
-                        Assalamu'alaikum
+                        Assalamu&apos;alaikum
                     </CardTitle>
                     <CardDescription className="text-center">
                         Enter your credentials to access your account
@@ -197,7 +207,7 @@ export default function LoginPage() {
                 </CardContent>
                 <CardFooter className="flex flex-col items-center justify-center space-y-2">
                     <p className="text-sm text-gray-600">
-                        Don't have an account?{" "}
+                        Don&apos;t have an account?{" "}
                         <a
                             href="/signup"
                             className="text-blue-500 hover:underline"

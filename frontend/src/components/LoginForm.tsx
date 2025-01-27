@@ -16,7 +16,6 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useRouter } from "next/navigation";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
 
 const formSchema = z.object({
@@ -51,7 +50,7 @@ export function LoginForm() {
             } else {
                 setError(result.error || "An error occurred during login.");
             }
-        } catch (error) {
+        } catch {
             setError("An unexpected error occurred. Please try again.");
         } finally {
             setIsLoading(false);

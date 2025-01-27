@@ -1,4 +1,4 @@
-import { LoginResponse } from "@/types";
+import { type LoginResponse, LoginResponseSchema } from "../types/auth";
 import { fetchApi } from "../lib/api";
 
 export const loginUser = async (credentials: {
@@ -6,7 +6,7 @@ export const loginUser = async (credentials: {
     password: string;
 }): Promise<LoginResponse> => {
     try {
-        const response = await fetchApi("/v1/login", {
+        const response = await fetchApi<LoginResponse>("/v1/login", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -14,10 +14,10 @@ export const loginUser = async (credentials: {
             body: JSON.stringify(credentials),
         });
 
-        const data = await response.json();
+        const data = LoginResponseSchema.parse(await response);
 
-        if (!response.ok) {
-            throw new Error(data.message);
+        if (!response.success) {
+            throw new Error(data.error);
         }
 
         return {
