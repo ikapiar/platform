@@ -15,9 +15,9 @@ import { initSentry } from './instrument.ts';
 async function bootstrap() {
     const app = await NestFactory.create(AppModule, {
         cors: {
-            origin: getConfig('APP_ORIGINS_CSV').split(','),
-            methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS']
-        }
+            origin: '*',
+            methods: '*',
+        },
     });
     const appPrefix = getConfig('API_VERSION');
     const appPort = getConfig('PORT');
