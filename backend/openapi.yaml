@@ -1,0 +1,147 @@
+openapi: "3.0.0"
+paths:
+  /v1/auth/login:
+    post:
+      operationId: "AuthController_localLogin"
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginDto"
+      responses:
+        201:
+          description: ""
+      summary: "Login with email and password. Returns set-cookie JWT token with user info (id, email, roles)."
+      tags:
+        - "Auth"
+  /v1/user/me:
+    get:
+      operationId: "UserController_me"
+      parameters: []
+      responses:
+        200:
+          description: ""
+      security:
+        - bearer: []
+      summary: "Get current authenticated user info"
+      tags:
+        - "User"
+  /v1/user/all:
+    get:
+      operationId: "UserController_listAllUsers"
+      parameters: []
+      responses:
+        200:
+          description: ""
+      security:
+        - bearer: []
+      summary: "List all User"
+      tags:
+        - "User"
+  /v1/user/create:
+    post:
+      operationId: "UserController_createUser"
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateUserDto"
+      responses:
+        201:
+          description: ""
+      security:
+        - bearer: []
+      summary: "Create User"
+      tags:
+        - "User"
+  /v1/user/delete:
+    delete:
+      operationId: "UserController_deleteUser"
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DeleteUserDto"
+      responses:
+        200:
+          description: ""
+      security:
+        - bearer: []
+      summary: "Delete User"
+      tags:
+        - "User"
+  /v1/user/password:
+    patch:
+      operationId: "UserController_updatePassword"
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdatePasswordUserDto"
+      responses:
+        200:
+          description: ""
+      security:
+        - bearer: []
+      summary: "Update user password"
+      tags:
+        - "User"
+info:
+  title: "Platform API"
+  description: "IKAPIAR Web Backends"
+  version: "0.0.4"
+  contact: {}
+tags: []
+servers: []
+components:
+  securitySchemes:
+    bearer:
+      scheme: "bearer"
+      bearerFormat: "JWT"
+      type: "http"
+  schemas:
+    LoginDto:
+      type: "object"
+      properties:
+        email:
+          type: "string"
+        password:
+          type: "string"
+      required:
+        - "email"
+        - "password"
+    CreateUserDto:
+      type: "object"
+      properties:
+        email:
+          type: "string"
+        password:
+          type: "string"
+      required:
+        - "email"
+        - "password"
+    DeleteUserDto:
+      type: "object"
+      properties:
+        email:
+          type: "string"
+      required:
+        - "email"
+    UpdatePasswordUserDto:
+      type: "object"
+      properties:
+        email:
+          type: "string"
+        password:
+          type: "string"
+      required:
+        - "email"
+        - "password"
