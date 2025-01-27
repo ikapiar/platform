@@ -11,6 +11,7 @@ import {
     EntityNotFoundExceptionFilter,
 } from './common/middlewares/errors.ts';
 import { initSentry } from './instrument.ts';
+import { stringify } from 'json-to-pretty-yaml';
 
 async function bootstrap() {
     const app = await NestFactory.create(AppModule, {
@@ -41,10 +42,7 @@ async function bootstrap() {
         .addBearerAuth()
         .build();
     const swaggerDocument = SwaggerModule.createDocument(app, swaggerOptions);
-    writeFileSync(
-        `${process.cwd()}/swagger.json`,
-        JSON.stringify(swaggerDocument, null, 2)
-    );
+    writeFileSync(`${process.cwd()}/openapi.yaml`, stringify(swaggerDocument));
     SwaggerModule.setup(`${appPrefix}/docs`, app, swaggerDocument);
 
     await app.listen(appPort);
